@@ -1,4 +1,4 @@
-name: Python CI
+name: Python CI with Docker
 
 on:
   push:
@@ -9,12 +9,30 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
+    - name: Checkout code
+      uses: actions/checkout@v3
+
     - name: Set up Python
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
+
     - name: Install dependencies
       run: pip install pytest
-    - name: Run tests
+
+    - name: Run Python tests
       run: pytest
+
+    - name: Build Docker image
+      run: docker build -t hello-ci-app .
+
+    # Optional: Push to Docker Hub (needs secrets)
+    # - name: Log in to Docker Hub
+    #   run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+    # - name: Tag Docker image
+    #   run: docker tag hello-ci-app ${{ secrets.DOCKER_USERNAME }}/hello-ci-app:latest
+
+    # - name: Push Docker image
+    #   run: docker push ${{ secrets.DOCKER_USERNAME }}/hello-ci-app:latest
+
